@@ -1,2 +1,119 @@
-// For information on how to create your own theme, please refer to:
-// https://ionicframework.com/docs/theming/
+// Design tokens ported from the Stitch design system ("Habitude Zen").
+// Reference: https://ionicframework.com/docs/theming/
+
+:root {
+  /* Palette */
+  --zen-primary: #006c49;
+  --zen-primary-container: #10b981;
+  --zen-primary-fixed: #6ffbbe;
+  --zen-mint-subtle: #e6f4ea;
+  --zen-mint-hover: #059669;
+
+  --zen-surface: #f8f9ff;
+  --zen-surface-canvas: #fbfbfa;
+  --zen-surface-card: #ffffff;
+  --zen-surface-subtle: #f4f5f2;
+  --zen-neutral-light: #f1f5f9;
+  --zen-surface-container: #e5eeff;
+
+  --zen-blue-subtle: #eff6ff;
+  --zen-blue-deep: #0284c7;
+  --zen-secondary: #0058be;
+
+  --zen-tertiary: #855300;
+  --zen-tertiary-fixed: #ffddb8;
+  --zen-tertiary-fixed-dim: #ffb95f;
+  --zen-tertiary-container: #e29100;
+
+  --zen-secondary-container: #2170e4;
+  --zen-on-primary-container: #00422b;
+  --zen-on-tertiary-container: #523200;
+  --zen-surface-container-high: #dce9ff;
+
+  --zen-pause-amber: #fef3c7;
+  --zen-pause-text: #b45309;
+
+  --zen-text-strong: #1e293b;
+  --zen-text-muted: #64748b;
+  --zen-on-surface: #0b1c30;
+  --zen-on-surface-variant: #3c4a42;
+  --zen-outline: #6c7a71;
+  --zen-outline-variant: #bbcabf;
+  --zen-error: #ba1a1a;
+  --zen-error-container: #ffdad6;
+
+  /* Glass surfaces (fixed header & bottom navigation) */
+  --zen-header-glass: rgba(251, 251, 250, 0.9);
+  --zen-nav-glass: rgba(255, 255, 255, 0.95);
+  --zen-hover-glass: rgba(241, 245, 249, 0.6);
+
+  /* Shape & spacing */
+  --zen-radius-card: 20px;
+  --zen-radius-tile: 16px;
+  --zen-gutter: 1.25rem;
+  --zen-content-max-width: 560px;
+
+  /* Typography */
+  --zen-font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+}
+
+// Dark palette, activated by the `ion-palette-dark` class on <html>
+// (toggled by ThemeService from the profile page's theme selector).
+// Overrides the Zen tokens so the custom surfaces follow dark mode;
+// Ionic's own variables are handled by `dark.class.css`.
+html.ion-palette-dark {
+  /* Black-on-yellow scheme: pure black backgrounds, yellow text */
+
+  /* Ionic core variables (dark.class.css sets grays; we go pure black/yellow) */
+  --ion-background-color: #000000;
+  --ion-background-color-rgb: 0, 0, 0;
+  --ion-text-color: #ffffff;
+  --ion-text-color-rgb: 255, 255, 255;
+  --ion-item-background: #000000;
+  --ion-toolbar-background: #000000;
+  --ion-tab-bar-background: #000000;
+
+  --zen-primary: #60a5fa;
+  --zen-primary-container: #172554;
+  --zen-primary-fixed: #93c5fd;
+  --zen-mint-subtle: #0a0f14;
+  --zen-mint-hover: #7dd3fc;
+
+  --zen-surface: #000000;
+  --zen-surface-canvas: #000000;
+  --zen-surface-card: #0a0a0a;
+  --zen-surface-subtle: #0d0d0d;
+  --zen-neutral-light: #101010;
+  --zen-surface-container: #0c0c0c;
+
+  --zen-blue-subtle: #0a0a14;
+  --zen-blue-deep: #38bdf8;
+  --zen-secondary: #60a5fa;
+
+  --zen-tertiary: #fbbf24;
+  --zen-tertiary-fixed: #4a2d05;
+  --zen-tertiary-fixed-dim: #d97706;
+  --zen-tertiary-container: #b45309;
+
+  --zen-secondary-container: #1d4ed8;
+  --zen-on-primary-container: #bfdbfe;
+  --zen-on-tertiary-container: #fde68a;
+  --zen-surface-container-high: #101010;
+
+  --zen-pause-amber: #3b2b0a;
+  --zen-pause-text: #fcd34d;
+
+  --zen-text-strong: #ffffff;
+  --zen-text-muted: #9ca3af;
+  --zen-on-surface: #ffffff;
+  --zen-on-surface-variant: #d1d5db;
+  --zen-outline: #d1d5db;
+  --zen-outline-variant: #374151;
+  --zen-error: #f87171;
+  --zen-error-container: #450a0a;
+
+  /* Glass surfaces */
+  --zen-header-glass: rgba(0, 0, 0, 0.9);
+  --zen-nav-glass: rgba(0, 0, 0, 0.95);
+  --zen-hover-glass: rgba(10, 10, 10, 0.6);
+}

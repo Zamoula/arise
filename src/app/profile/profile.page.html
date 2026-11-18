@@ -1,0 +1,253 @@
+<app-header />
+
+<ion-content [fullscreen]="true" class="zen-content">
+  <main class="zen-main">
+    <!-- Warm & immersive profile header -->
+    <section class="profile-hero">
+      <div class="profile-hero__glow profile-hero__glow--top"></div>
+      <div class="profile-hero__glow profile-hero__glow--bottom"></div>
+
+      <div class="profile-hero__avatar-wrap">
+        <!-- Tapping the avatar (or the camera badge) opens the phone's photo picker. -->
+        <label class="profile-hero__avatar-ring" for="profile-avatar-input">
+          <img alt="Clara Delacroix" [src]="avatarUrl()" />
+        </label>
+        <label [attr.aria-label]="t('profile.avatarAria')" class="profile-hero__badge" for="profile-avatar-input">
+          <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1"> photo_camera </span>
+        </label>
+        <input
+          accept="image/*"
+          class="profile-hero__avatar-input"
+          id="profile-avatar-input"
+          type="file"
+          (change)="onAvatarPicked($event)"
+        />
+      </div>
+
+      <h2 class="profile-hero__name">THE SAVIOR</h2>
+      <p class="profile-hero__member">you can always be better</p>
+
+      <div class="profile-hero__streak">
+        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1"> local_fire_department </span>
+        <span>
+          {{ t('profile.streakTotal') }} {{ allTimeStats().currentStreak }} {{ allTimeStats().currentStreak > 1 ?
+          t('time.days') : t('time.day') }}
+        </span>
+      </div>
+
+      <div class="profile-hero__stats">
+        <div class="profile-hero__stat">
+          <span class="profile-hero__stat-value">{{ allTimeStats().completionRate }}%</span>
+          <span class="profile-hero__stat-label">{{ t('profile.completionRate') }}</span>
+        </div>
+        <div class="profile-hero__stat">
+          <span class="profile-hero__stat-value profile-hero__stat-value--primary">
+            {{ allTimeStats().kindPauses }}
+          </span>
+          <span class="profile-hero__stat-label">{{ t('profile.kindPauses') }}</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Kindness preferences -->
+    <section class="settings-section">
+      <div class="settings-section__head">
+        <span class="material-symbols-outlined settings-section__icon--mint"> favorite </span>
+        <h3>{{ t('profile.kindnessSection') }}</h3>
+      </div>
+
+      <div class="settings-card settings-card--spacious">
+        <!-- Pressure-free mode switch -->
+        <div class="setting-row">
+          <div class="setting-row__main">
+            <div class="setting-row__icon setting-row__icon--mint">
+              <span class="material-symbols-outlined">psychology</span>
+            </div>
+            <div class="setting-row__text">
+              <span class="setting-row__title">{{ t('profile.pressure') }}</span>
+              <span class="setting-row__sub"> {{ t('profile.pressureSub') }} </span>
+            </div>
+          </div>
+          <button
+            aria-checked="{{ pressureMode() }}"
+            class="toggle"
+            [class.toggle--on]="pressureMode()"
+            role="switch"
+            type="button"
+            (click)="togglePressureMode()"
+          >
+            <span class="toggle__knob"></span>
+          </button>
+        </div>
+
+        <!-- Smart reminders switch -->
+        <div class="setting-row-block">
+          <div class="setting-row">
+            <div class="setting-row__main">
+              <div class="setting-row__icon setting-row__icon--blue">
+                <span class="material-symbols-outlined"> notifications_active </span>
+              </div>
+              <div class="setting-row__text">
+                <span class="setting-row__title">{{ t('profile.reminders') }}</span>
+                <span class="setting-row__sub"> {{ notificationsSub() }} </span>
+              </div>
+            </div>
+            <button
+              aria-checked="{{ notifications() }}"
+              class="toggle"
+              [class.toggle--on]="notifications()"
+              role="switch"
+              type="button"
+              (click)="toggleNotifications()"
+            >
+              <span class="toggle__knob"></span>
+            </button>
+          </div>
+
+          <div class="quiet-hours-block">
+            <div class="setting-row">
+              <div class="setting-row__main">
+                <div class="setting-row__icon setting-row__icon--blue">
+                  <span class="material-symbols-outlined">bedtime</span>
+                </div>
+                <div class="setting-row__text">
+                  <span class="setting-row__title">{{ t('profile.quietHours') }}</span>
+                  <span class="setting-row__sub">{{ quietHoursSub() }}</span>
+                </div>
+              </div>
+              <button
+                aria-checked="{{ quietHoursEnabled() }}"
+                class="toggle"
+                [class.toggle--on]="quietHoursEnabled()"
+                role="switch"
+                type="button"
+                (click)="toggleQuietHours()"
+              >
+                <span class="toggle__knob"></span>
+              </button>
+            </div>
+
+            <div class="quiet-hours" [class.quiet-hours--off]="!quietHoursEnabled()">
+              <label class="quiet-hours__field">
+                <span class="quiet-hours__label">{{ t('profile.quietHoursFrom') }}</span>
+                <input
+                  class="quiet-hours__input"
+                  type="time"
+                  [attr.aria-label]="t('profile.quietHoursFrom')"
+                  [disabled]="!quietHoursEnabled()"
+                  [value]="quietHoursStart()"
+                  (change)="setQuietHoursStart($event)"
+                />
+              </label>
+              <span class="material-symbols-outlined quiet-hours__arrow">arrow_forward</span>
+              <label class="quiet-hours__field">
+                <span class="quiet-hours__label">{{ t('profile.quietHoursTo') }}</span>
+                <input
+                  class="quiet-hours__input"
+                  type="time"
+                  [attr.aria-label]="t('profile.quietHoursTo')"
+                  [disabled]="!quietHoursEnabled()"
+                  [value]="quietHoursEnd()"
+                  (change)="setQuietHoursEnd($event)"
+                />
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Visual theme selector -->
+        <div class="setting-row-block">
+          <div class="setting-row__header">
+            <div class="setting-row__icon setting-row__icon--amber">
+              <span class="material-symbols-outlined">palette</span>
+            </div>
+            <span class="setting-row__title">{{ t('profile.theme') }}</span>
+          </div>
+          <div class="theme-grid">
+            @for (theme of themes(); track theme.id) {
+            <button
+              class="theme-option"
+              [class.theme-option--active]="selectedTheme() === theme.id"
+              type="button"
+              (click)="selectTheme(theme.id)"
+            >
+              <span class="material-symbols-outlined">{{ theme.icon }}</span>
+              <span>{{ theme.label }}</span>
+            </button>
+            }
+          </div>
+        </div>
+
+        <!-- Language selector -->
+        <div class="setting-row-block">
+          <div class="setting-row__header">
+            <div class="setting-row__icon setting-row__icon--blue">
+              <span class="material-symbols-outlined">language</span>
+            </div>
+            <div class="setting-row__text">
+              <span class="setting-row__title">{{ t('profile.language') }}</span>
+              <span class="setting-row__sub"> {{ t('profile.languageSub') }} </span>
+            </div>
+          </div>
+          <div class="theme-grid">
+            @for (language of languages; track language.id) {
+            <button
+              class="theme-option"
+              [class.theme-option--active]="selectedLanguage() === language.id"
+              type="button"
+              (click)="selectLanguage(language.id)"
+            >
+              <span class="material-symbols-outlined">{{ language.icon }}</span>
+              <span>{{ language.label }}</span>
+            </button>
+            }
+          </div>
+        </div>
+
+        <!-- Check sound selector -->
+        <div class="setting-row-block">
+          <div class="setting-row__header">
+            <div class="setting-row__icon setting-row__icon--mint">
+              <span class="material-symbols-outlined">volume_up</span>
+            </div>
+            <div class="setting-row__text">
+              <span class="setting-row__title">{{ t('profile.sound') }}</span>
+              <span class="setting-row__sub"> {{ t('profile.soundSub') }} </span>
+            </div>
+          </div>
+          <div class="sound-chips">
+            @for (sound of sounds(); track sound.id) {
+            <button
+              class="sound-chip"
+              [class.sound-chip--active]="selectedSound() === sound.id"
+              type="button"
+              (click)="selectSound(sound.id)"
+            >
+              <span class="material-symbols-outlined">{{ sound.icon }}</span>
+              <span>{{ sound.label }}</span>
+            </button>
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</ion-content>
+
+<!-- Bottom navigation -->
+<nav class="app-nav">
+  <div class="app-nav__inner">
+    <a class="app-nav__item" routerLink="/home">
+      <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0"> wb_sunny </span>
+      <span>{{ t('nav.today') }}</span>
+    </a>
+    <a class="app-nav__item" routerLink="/stats">
+      <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0"> bar_chart </span>
+      <span>{{ t('nav.stats') }}</span>
+    </a>
+    <a aria-current="page" class="app-nav__item app-nav__item--active" routerLink="/profile">
+      <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1"> person </span>
+      <span>{{ t('nav.profile') }}</span>
+    </a>
+  </div>
+</nav>

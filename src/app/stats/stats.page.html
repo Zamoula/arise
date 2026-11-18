@@ -1,0 +1,217 @@
+<app-header />
+
+<ion-content [fullscreen]="true" class="zen-content">
+  <main class="zen-main">
+    <!-- Title & period selector -->
+    <div class="stats-title">
+      <span class="stats-title__heading">{{ t('stats.title') }}</span>
+      <div class="periods" role="tablist">
+        @for (period of periods(); track period.id) {
+        <button
+          class="periods__pill"
+          [class.periods__pill--active]="selectedPeriod() === period.id"
+          type="button"
+          (click)="selectPeriod(period.id)"
+        >
+          {{ period.label }}
+        </button>
+        }
+      </div>
+    </div>
+
+    <!-- Encouragement banner -->
+    @if (bannerVisible()) {
+    <div class="banner">
+      <div class="banner__icon">
+        <span class="material-symbols-outlined">energy_savings_leaf</span>
+      </div>
+      <div class="banner__text">
+        <span class="banner__headline">{{ stats().bannerHeadline }}</span>
+        <p class="banner__sub">{{ stats().bannerSub }}</p>
+      </div>
+      <button
+        [attr.aria-label]="t('stats.closeBannerAria')"
+        class="banner__close"
+        type="button"
+        (click)="dismissBanner()"
+      >
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    }
+
+    <!-- Period rhythm -->
+    <div class="rhythm">
+      <div class="rhythm__head">
+        <div class="rhythm__title">
+          <span class="material-symbols-outlined">calendar_today</span>
+          <span>{{ stats().rhythmTitle }}</span>
+        </div>
+        <span class="rhythm__goal">{{ stats().goalLabel }}</span>
+      </div>
+
+      <div
+        class="rhythm__grid"
+        [class.rhythm__grid--dense]="stats().rhythmDays.length > 7"
+        [style.gridTemplateColumns]="rhythmColumns()"
+      >
+        @for (day of stats().rhythmDays; track day.startIso) {
+        <button
+          class="rhythm__col"
+          [class.rhythm__col--today]="day.today"
+          [class.rhythm__col--pause]="day.pause"
+          type="button"
+          (click)="selectDay(day)"
+        >
+          <span class="rhythm__hint">{{ day.hint }}</span>
+          <span class="rhythm__track">
+            <span
+              class="rhythm__fill"
+              [class.rhythm__fill--today]="day.fillClass === 'today'"
+              [class.rhythm__fill--pause]="day.fillClass === 'pause'"
+              [class.rhythm__fill--soft-1]="day.fillClass === 'soft-1'"
+              [class.rhythm__fill--soft-2]="day.fillClass === 'soft-2'"
+              [style.height.%]="day.percent"
+            ></span>
+          </span>
+          <span class="rhythm__day">
+            {{ day.label }} @if (day.today) {
+            <span class="rhythm__day-dot"></span>
+            }
+          </span>
+        </button>
+        }
+      </div>
+
+      <div class="rhythm__feedback" [class.rhythm__feedback--highlighted]="dayFeedbackHighlighted()">
+        {{ dayFeedback() }}
+      </div>
+    </div>
+
+    <!-- Period snapshots -->
+    <section class="stats-block">
+      <h2 class="stats-block__title">
+        <span class="material-symbols-outlined stats-block__icon--mint"> insights </span>
+        <span>{{ stats().snapshotTitle }}</span>
+      </h2>
+
+      <div class="stats-block__list">
+        @for (snapshot of stats().snapshots; track snapshot.title) {
+        <div class="snapshot">
+          <div class="snapshot__main">
+            <div class="snapshot__icon" [class]="snapshot.iconClass">
+              <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">
+                {{ snapshot.icon }}
+              </span>
+            </div>
+            <div class="snapshot__text">
+              <span class="snapshot__name">{{ snapshot.title }}</span>
+              <span class="snapshot__detail">{{ snapshot.detail }}</span>
+            </div>
+          </div>
+          <div class="snapshot__badge" [class]="snapshot.badgeClass">{{ snapshot.badge }}</div>
+        </div>
+        }
+      </div>
+    </section>
+
+    <!-- Category balance -->
+    <section class="stats-block">
+      <div class="stats-block__header">
+        <h2 class="stats-block__title">
+          <span class="material-symbols-outlined stats-block__icon--blue"> donut_large </span>
+          <span>{{ t('stats.categories') }}</span>
+        </h2>
+        <span class="stats-block__meta">
+          {{ stats().activeCategoryCount }} {{ stats().activeCategoryCount === 1 ? t('stats.activePillarOne') :
+          t('stats.activePillarMany') }}
+        </span>
+      </div>
+
+      @if (stats().categories.length > 0) {
+      <div class="stats-block__list">
+        @for (category of stats().categories; track category.name) {
+        <div class="category">
+          <div class="category__head">
+            <div class="category__name">
+              <span class="category__dot" [class]="category.dotClass"></span>
+              <span>{{ category.name }}</span>
+            </div>
+            <span class="category__percent" [class]="category.percentClass"> {{ category.percent }}% </span>
+          </div>
+          <div class="category__track">
+            <div class="category__fill" [class]="category.fillClass" [style.width.%]="category.percent"></div>
+          </div>
+          <div class="category__foot">
+            <span>{{ category.detail }}</span>
+            <span>{{ category.count }}</span>
+          </div>
+        </div>
+        }
+      </div>
+      } @else {
+      <p class="stats-empty">{{ t('stats.categoriesEmpty') }}</p>
+      }
+    </section>
+
+    <!-- Badges -->
+    <section class="stats-block">
+      <div class="stats-block__header">
+        <h2 class="stats-block__title">
+          <span class="material-symbols-outlined stats-block__icon--amber" style="font-variation-settings: 'FILL' 1">
+            military_tech
+          </span>
+          <span>{{ t('stats.badges') }}</span>
+        </h2>
+        <span class="stats-block__meta stats-block__meta--mint">
+          {{ stats().unlockedBadgeCount }} {{ stats().unlockedBadgeCount === 1 ? t('stats.unlockedOne') :
+          t('stats.unlockedMany') }}
+        </span>
+      </div>
+
+      <div class="badges">
+        @for (badge of stats().badges; track badge.title) {
+        <div class="badge-card" [class.badge-card--locked]="!badge.unlocked">
+          <div class="badge-card__circle" [class]="badge.circleClass">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1"> {{ badge.icon }} </span>
+          </div>
+          <span class="badge-card__title">{{ badge.title }}</span>
+          <span class="badge-card__detail">{{ badge.detail }}</span>
+        </div>
+        }
+      </div>
+    </section>
+
+    <!-- Rest card -->
+    <div class="rest">
+      <div class="rest__main">
+        <div class="rest__icon">
+          <span class="material-symbols-outlined">self_improvement</span>
+        </div>
+        <div class="rest__text">
+          <span class="rest__title">{{ t('stats.restTitle') }}</span>
+          <span class="rest__sub"> {{ t('stats.restSub') }} </span>
+        </div>
+      </div>
+      <button class="rest__button" type="button" (click)="pauseHabits()">{{ t('stats.restButton') }}</button>
+    </div>
+  </main>
+</ion-content>
+
+<!-- Bottom navigation -->
+<nav class="app-nav">
+  <div class="app-nav__inner">
+    <a class="app-nav__item" routerLink="/home">
+      <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0"> wb_sunny </span>
+      <span>{{ t('nav.today') }}</span>
+    </a>
+    <a aria-current="page" class="app-nav__item app-nav__item--active" routerLink="/stats">
+      <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1"> bar_chart </span>
+      <span>{{ t('nav.stats') }}</span>
+    </a>
+    <a class="app-nav__item" routerLink="/profile">
+      <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0"> person </span>
+      <span>{{ t('nav.profile') }}</span>
+    </a>
+  </div>
+</nav>

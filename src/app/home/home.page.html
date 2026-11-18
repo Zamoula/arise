@@ -1,21 +1,213 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title> Blank </ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header />
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" class="zen-content">
+  <main class="zen-main">
+    <!-- Greeting & date -->
+    <header class="greeting">
+      <div class="greeting__text">
+        <span class="greeting__date">{{ todayLabel() }} </span>
+        <div class="greeting__row">
+          <h2 class="greeting__hello">{{ t('home.hello') }}</h2>
+          <span class="greeting__emoji">👋</span>
+        </div>
+        <p class="greeting__sub">{{ t('home.sub') }}</p>
+      </div>
+      <div class="greeting__portrait" aria-hidden="true">
+        <span class="material-symbols-outlined">person</span>
+      </div>
+    </header>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>
-      Start with Ionic
-      <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a>
-    </p>
-  </div>
+    <!-- Daily progress card -->
+    <section class="progress-card">
+      <div class="progress-card__text">
+        <span class="progress-card__badge">
+          <span class="material-symbols-outlined">eco</span>
+          {{ t('home.badge') }}
+        </span>
+        <h3 class="progress-card__title">{{ t('home.progressTitle', { done: doneCount(), total: totalCount() }) }}</h3>
+        <p class="progress-card__sub">{{ t('home.progressSub') }}</p>
+      </div>
+      <div class="progress-ring">
+        <svg class="progress-ring__svg" viewBox="0 0 44 44">
+          <circle class="progress-ring__track" cx="22" cy="22" fill="none" r="18" stroke-width="4.5"></circle>
+          <circle
+            class="progress-ring__value"
+            cx="22"
+            cy="22"
+            fill="none"
+            r="18"
+            stroke-width="4.5"
+            stroke-linecap="round"
+            [attr.stroke-dasharray]="'113.1'"
+            [attr.stroke-dashoffset]="ringOffset()"
+          ></circle>
+        </svg>
+        <div class="progress-ring__label">
+          <span>{{ progressPercent() }}<span class="progress-ring__percent">%</span></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Weekly strip -->
+    <nav [attr.aria-label]="t('home.weekAria')" class="week-strip">
+      <div class="week-strip__inner">
+        @for (day of days(); track day.isoDate) {
+        <button
+          class="week-strip__day"
+          [class.week-strip__day--selected]="selectedDay() === $index"
+          type="button"
+          (click)="selectDay($index)"
+        >
+          <span class="week-strip__label">{{ day.label }}</span>
+          <span class="week-strip__date">{{ day.date }}</span>
+          <span
+            class="week-strip__dot"
+            [class.week-strip__dot--done]="day.dot === 'done'"
+            [class.week-strip__dot--today]="day.dot === 'today'"
+            [class.week-strip__dot--none]="day.dot === 'none'"
+          ></span>
+        </button>
+        }
+      </div>
+    </nav>
+
+    <!-- Moment filters -->
+    <div class="filters">
+      @for (filter of filters(); track filter.id) {
+      <button
+        class="filter-chip"
+        [class.filter-chip--active]="selectedFilter() === filter.id"
+        type="button"
+        (click)="selectFilter(filter.id)"
+      >
+        @if (filter.icon) {
+        <span class="material-symbols-outlined">{{ filter.icon }}</span>
+        }
+        <span>{{ filter.label }}</span>
+        @if (filter.id === 'all') {
+        <span class="filter-chip__count">{{ totalCount() }}</span>
+        }
+      </button>
+      }
+    </div>
+
+    <!-- Habit sections -->
+    @for (section of visibleSections(); track section.id) {
+    <section class="habit-section">
+      <div class="habit-section__header">
+        <div class="habit-section__name">
+          <span class="material-symbols-outlined">{{ section.icon }}</span>
+          <h4>{{ t('moment.' + section.id) }}</h4>
+        </div>
+        <span class="habit-section__count">
+          {{ t('home.sectionCount', { done: habitsDone(section), total: section.habits.length }) }}
+        </span>
+      </div>
+
+      @for (habit of section.habits; track habit.id) {
+      <article
+        class="habit-card"
+        [class.habit-card--done]="habit.state === 'done'"
+        [class.habit-card--postponed]="habit.state === 'postponed'"
+        routerLink="/habit/{{ habit.id }}"
+      >
+        <div class="habit-card__body">
+          <div class="habit-card__icon" [class]="habit.iconClass">
+            <span class="material-symbols-outlined">{{ habit.icon }}</span>
+          </div>
+          <div class="habit-card__text">
+            <h5 class="habit-card__title" [class.habit-card__title--done]="habit.state === 'done'">
+              {{ habit.title }}
+            </h5>
+            <div class="habit-card__meta">
+              @if (habit.doneNote && habit.state === 'done') {
+              <span class="habit-card__note">
+                <span class="material-symbols-outlined">check</span>
+                {{ habit.doneNote === 'Validé' ? t('habit.validated') : habit.doneNote }}
+              </span>
+              } @else { @if (habit.time) {
+              <span class="habit-card__meta-item">{{ habit.time }}</span>
+              <span class="habit-card__meta-dot"></span>
+              } @if (habit.state === 'postponed') {
+              <span class="habit-card__badge-postponed"> {{ t('home.postponedBadge') }} </span>
+              } @else if (scheduleDetail(habit)) {
+              <span
+                class="habit-card__meta-item"
+                [class.habit-card__meta-item--primary]="habit.detailTone === 'primary'"
+              >
+                {{ scheduleDetail(habit) }}
+              </span>
+              } }
+            </div>
+          </div>
+        </div>
+
+        @if (habit.state === 'postponed') {
+        <button class="habit-card__tomorrow" type="button">
+          <span class="material-symbols-outlined">schedule</span>
+          <span>{{ t('home.tomorrow') }}</span>
+        </button>
+        } @else if (habit.state === 'done') {
+        <button
+          [attr.aria-label]="t('home.doneAria')"
+          class="habit-card__check habit-card__check--done"
+          type="button"
+          (click)="toggle(habit); $event.stopPropagation()"
+        >
+          <span class="material-symbols-outlined" style="font-variation-settings: 'wght' 700"> done </span>
+        </button>
+        } @else {
+        <button
+          [attr.aria-label]="t('home.markDoneAria')"
+          class="habit-card__check"
+          type="button"
+          (click)="toggle(habit); $event.stopPropagation()"
+        >
+          <span class="material-symbols-outlined">circle</span>
+        </button>
+        }
+      </article>
+      }
+    </section>
+    }
+
+    <!-- Zen quote -->
+    <aside class="quote-card">
+      <div class="quote-card__text">
+        <span class="quote-card__kicker">{{ t('home.quoteKicker') }}</span>
+        <p class="quote-card__quote">{{ t('home.quote') }}</p>
+      </div>
+    </aside>
+
+    <!-- Main CTA -->
+    <div class="cta">
+      <button class="cta__button" type="button" routerLink="/add-habit">
+        <span class="material-symbols-outlined">add</span>
+        <span>{{ t('home.add') }}</span>
+      </button>
+    </div>
+  </main>
 </ion-content>
+
+<!-- Floating action button -->
+<button [attr.aria-label]="t('home.add')" class="app-fab" routerLink="/add-habit" type="button">
+  <span class="material-symbols-outlined">add</span>
+</button>
+
+<!-- Bottom navigation -->
+<nav class="app-nav">
+  <div class="app-nav__inner">
+    <a aria-current="page" class="app-nav__item app-nav__item--active" routerLink="/home">
+      <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1"> wb_sunny </span>
+      <span>{{ t('nav.today') }}</span>
+    </a>
+    <a class="app-nav__item" routerLink="/stats">
+      <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0"> bar_chart </span>
+      <span>{{ t('nav.stats') }}</span>
+    </a>
+    <a class="app-nav__item" routerLink="/profile">
+      <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0"> person </span>
+      <span>{{ t('nav.profile') }}</span>
+    </a>
+  </div>
+</nav>

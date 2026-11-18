@@ -1,0 +1,11 @@
+@use 'app-shell';
+
+// Stack page: smaller bottom padding, no bottom nav.
+.zen-content {
+  --padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+}
+
+.zen-main {
+  padding-bottom: 32px;
+}
+

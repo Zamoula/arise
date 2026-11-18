@@ -1,0 +1,94 @@
+// Shared app shell styles (content area + bottom navigation)
+// used by the tab pages (Home, Stats, Profile).
+//
+// The fixed top bar is the shared AppHeaderComponent
+// (src/app/shared/app-header/).
+//
+// Design tokens live in src/theme/variables.scss.
+
+:host {
+  font-family: var(--zen-font-family);
+}
+
+// ---------------------------------------------------------------------------
+// Content area
+// ---------------------------------------------------------------------------
+
+.zen-content {
+  --background: var(--zen-surface);
+  --color: var(--zen-on-surface);
+  --padding-top: calc(84px + env(safe-area-inset-top, 0px));
+  --padding-bottom: calc(120px + env(safe-area-inset-bottom, 0px));
+  --padding-start: var(--zen-gutter);
+  --padding-end: var(--zen-gutter);
+
+  font-family: var(--zen-font-family);
+}
+
+.zen-main {
+  max-width: var(--zen-content-max-width);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+// ---------------------------------------------------------------------------
+// Bottom navigation
+// ---------------------------------------------------------------------------
+
+.app-nav {
+  position: fixed;
+  bottom: 0;
+  inset-inline: 0;
+  z-index: 50;
+  background: var(--zen-nav-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 -4px 20px rgba(30, 41, 59, 0.04);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.app-nav__inner {
+  max-width: var(--zen-content-max-width);
+  margin: 0 auto;
+  height: 80px;
+  padding: 0 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.app-nav__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 64px;
+  min-height: 44px;
+  text-decoration: none;
+  color: var(--zen-text-muted);
+  transition: color 0.2s;
+
+  .material-symbols-outlined {
+    font-size: 24px;
+  }
+
+  > span:last-child {
+    font-size: 11px;
+    line-height: 16px;
+  }
+
+  &:hover {
+    color: var(--zen-on-surface);
+  }
+}
+
+.app-nav__item--active {
+  color: var(--zen-primary);
+  font-weight: 600;
+
+  > span:last-child {
+    font-weight: 600;
+  }
+}

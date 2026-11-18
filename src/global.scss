@@ -10,20 +10,20 @@
  */
 
 /* Core CSS required for Ionic components to work properly */
-@import "@ionic/angular/css/core.css";
+@import '@ionic/angular/css/core.css';
 
 /* Basic CSS for apps built with Ionic */
-@import "@ionic/angular/css/normalize.css";
-@import "@ionic/angular/css/structure.css";
-@import "@ionic/angular/css/typography.css";
-@import "@ionic/angular/css/display.css";
+@import '@ionic/angular/css/normalize.css';
+@import '@ionic/angular/css/structure.css';
+@import '@ionic/angular/css/typography.css';
+@import '@ionic/angular/css/display.css';
 
 /* Optional CSS utils that can be commented out */
-@import "@ionic/angular/css/padding.css";
-@import "@ionic/angular/css/float-elements.css";
-@import "@ionic/angular/css/text-alignment.css";
-@import "@ionic/angular/css/text-transformation.css";
-@import "@ionic/angular/css/flex-utils.css";
+@import '@ionic/angular/css/padding.css';
+@import '@ionic/angular/css/float-elements.css';
+@import '@ionic/angular/css/text-alignment.css';
+@import '@ionic/angular/css/text-transformation.css';
+@import '@ionic/angular/css/flex-utils.css';
 
 /**
  * Ionic Dark Mode
@@ -32,6 +32,62 @@
  * https://ionicframework.com/docs/theming/dark-mode
  */
 
-/* @import "@ionic/angular/css/palettes/dark.always.css"; */
-/* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import '@ionic/angular/css/palettes/dark.system.css';
+/* The dark palette is driven by the `ion-palette-dark` class on <html>,
+ * toggled by ThemeService based on the choice made on the profile page
+ * (warm / dark / auto). See https://ionicframework.com/docs/theming/dark-mode */
+@import '@ionic/angular/css/palettes/dark.class.css';
+
+/* Self-hosted Material Symbols icon font (variable, no CDN/network needed) */
+@import 'material-symbols/outlined.css';
+
+ion-popover.notifications-popover {
+  --width: min(320px, calc(100vw - 2rem));
+  --background: var(--zen-surface-card);
+  --box-shadow: 0 12px 32px rgba(30, 41, 59, 0.12);
+  --border-radius: var(--zen-radius-tile);
+}
+
+.notifications-popover__content {
+  padding: 0.75rem 0;
+}
+
+.notifications-popover__header {
+  padding: 0 1rem 0.5rem;
+}
+
+.notifications-popover__title {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  color: var(--zen-text-strong);
+}
+
+.notifications-popover__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.notifications-popover__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.625rem 1rem;
+}
+
+.notifications-popover__item--muted .notifications-popover__text {
+  color: var(--zen-text-muted);
+}
+
+.notifications-popover__icon {
+  font-size: 20px;
+  color: var(--zen-primary);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.notifications-popover__text {
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--zen-on-surface);
+}

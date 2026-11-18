@@ -1,0 +1,273 @@
+<!-- Stack page header: back button, no bottom nav -->
+<app-header [showBack]="true" (back)="goBack()" />
+
+<ion-content [fullscreen]="true" class="zen-content">
+  <main class="zen-main">
+    <!-- Habit identity card -->
+    <section class="identity-card">
+      <div class="identity-card__glow"></div>
+
+      <div class="identity-card__main">
+        <div class="identity-card__icon">
+          <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">
+            {{ habit()?.icon ?? 'spa' }}
+          </span>
+        </div>
+        <div class="identity-card__text">
+          <div class="identity-card__tags">
+            <span class="identity-card__tag identity-card__tag--category">
+              <span class="identity-card__tag-dot"></span>
+              {{ t('detail.tagCategory') }}
+            </span>
+            <span class="identity-card__tag identity-card__tag--status"> {{ statusLabel() }} </span>
+          </div>
+          <h2 class="identity-card__title">{{ habit()?.title ?? t('detail.defaultTitle') }}</h2>
+          <div class="identity-card__meta">
+            <span class="material-symbols-outlined">schedule</span>
+            <span>{{ scheduleLabel() }}</span>
+            <span class="identity-card__meta-sep">•</span>
+            <span>10 min</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gentle insight pill -->
+      <div class="identity-card__insight">
+        <div class="identity-card__insight-icon">
+          <span class="material-symbols-outlined">wb_sunny</span>
+        </div>
+        <p>{{ t('detail.insight') }}</p>
+      </div>
+    </section>
+
+    <!-- Key metrics -->
+    <section class="kpi-grid">
+      @for (kpi of kpis(); track kpi.label) {
+      <div class="kpi-card">
+        <div class="kpi-card__head">
+          <span class="kpi-card__label">{{ kpi.label }}</span>
+          <div class="kpi-card__badge" [class]="kpi.iconClass">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1"> {{ kpi.icon }} </span>
+          </div>
+        </div>
+        <div class="kpi-card__body">
+          <div class="kpi-card__value">
+            {{ kpi.value }} @if (kpi.unit) {
+            <span class="kpi-card__unit">{{ kpi.unit }}</span>
+            }
+          </div>
+          @if (kpi.trend) {
+          <div class="kpi-card__trend">
+            <span class="material-symbols-outlined">{{ kpi.trend }}</span>
+            <span>{{ kpi.sub }}</span>
+          </div>
+          } @else {
+          <span class="kpi-card__sub">{{ kpi.sub }}</span>
+          }
+        </div>
+      </div>
+      }
+    </section>
+
+    <!-- Visual calendar -->
+    <section class="calendar-card">
+      <div class="calendar-card__head">
+        <div>
+          <h3 class="calendar-card__month">{{ calendar().label }}</h3>
+          <p class="calendar-card__count">{{ calendar().count }}</p>
+        </div>
+        <div class="calendar-card__nav">
+          <button
+            [attr.aria-label]="t('detail.prevMonthAria')"
+            class="calendar-card__nav-btn"
+            type="button"
+            [disabled]="!calendar().canGoPrev"
+            (click)="goToPreviousMonth()"
+          >
+            <span class="material-symbols-outlined">chevron_left</span>
+          </button>
+          <button
+            [attr.aria-label]="t('detail.nextMonthAria')"
+            class="calendar-card__nav-btn"
+            type="button"
+            [disabled]="!calendar().canGoNext"
+            (click)="goToNextMonth()"
+          >
+            <span class="material-symbols-outlined">chevron_right</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="calendar-card__weekdays">
+        @for (label of weekdayLabels(); track $index) {
+        <div>{{ label }}</div>
+        }
+      </div>
+
+      <div class="calendar-card__grid">
+        @for (day of calendar().days; track $index) {
+        <div class="calendar-cell">
+          <span
+            class="calendar-day"
+            [class.calendar-day--completed]="day.state === 'completed'"
+            [class.calendar-day--pause]="day.state === 'pause'"
+            [class.calendar-day--today]="day.state === 'today'"
+            [class.calendar-day--future]="day.state === 'future'"
+            [class.calendar-day--outside]="day.state === 'outside'"
+            [title]="day.state === 'pause' ? t('detail.kindPause') : null"
+          >
+            {{ day.label }}
+          </span>
+        </div>
+        }
+      </div>
+
+      <div class="calendar-card__legend">
+        <div class="calendar-card__legend-item">
+          <span class="calendar-card__legend-dot calendar-card__legend-dot--done"></span>
+          <span>{{ t('detail.legendDone') }}</span>
+        </div>
+        <div class="calendar-card__legend-item">
+          <span class="calendar-card__legend-dot calendar-card__legend-dot--pause"></span>
+          <span>{{ t('detail.legendPause') }}</span>
+        </div>
+        <div class="calendar-card__legend-item">
+          <span class="calendar-card__legend-dot calendar-card__legend-dot--future"></span>
+          <span>{{ t('detail.legendFuture') }}</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Serene quote banner -->
+    <section class="quote-banner">
+      <div class="quote-banner__text">
+        <span class="quote-banner__kicker">{{ t('detail.quoteKicker') }}</span>
+        <p class="quote-banner__quote">{{ t('detail.quote') }}</p>
+        <span class="quote-banner__author">Thich Nhat Hanh</span>
+      </div>
+      <div class="quote-banner__image">
+        <img
+          alt="Jardin zen apaisant"
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuAYIiVxLt-gXD_8cd7TkBmQaTpMEJXv3Tfu5uJ8Fs4Ajy9OAIoV1vTy8N5O5HYQRY6yXujopdZFNjOi5YQZIo-1wTmoB7C1Q1g6zQlyivrEKowYXBr6kkTA_ebk1HvLEwstO5NumW3MlNpZ089Lk8eo0ZYv--TaiQZsPaoEpqGp_ttghfNPJCV5uppEzY8lIlIXjQBmo4T4wdHocs1BVqSnI7TsU511y9Oyvos_V36Z"
+        />
+      </div>
+    </section>
+
+    <!-- Recent history -->
+    <section class="history-card">
+      <div class="history-card__head">
+        <h3 class="history-card__title">{{ t('detail.historyTitle') }}</h3>
+        <span class="history-card__count">{{ historyCountLabel() }}</span>
+      </div>
+
+      <div class="history-card__list">
+        @for (entry of history(); track entry.title) {
+        <div class="history-entry" [class.history-entry--today]="entry.today">
+          <div class="history-entry__icon" [class.history-entry__icon--today]="entry.today">
+            <span class="material-symbols-outlined">check</span>
+          </div>
+          <div class="history-entry__body">
+            <div class="history-entry__row">
+              <span class="history-entry__title">{{ entry.title }}</span>
+              <span class="history-entry__time" [class.history-entry__time--today]="entry.today">
+                {{ entry.time }}
+              </span>
+            </div>
+            <p class="history-entry__note">{{ entry.note }}</p>
+          </div>
+        </div>
+        } @empty {
+        <p class="history-card__empty">{{ t('detail.historyListEmpty') }}</p>
+        }
+      </div>
+    </section>
+
+    <!-- Management actions -->
+    <section class="detail-actions">
+      <button class="detail-actions__primary" type="button" (click)="editHabit()">
+        <span class="material-symbols-outlined">edit</span>
+        <span>{{ t('detail.edit') }}</span>
+      </button>
+
+      <div class="detail-actions__row">
+        <button class="detail-actions__schedule" type="button" (click)="adjustSchedule()">
+          <span class="material-symbols-outlined">alarm</span>
+          <span>{{ t('detail.adjustTime') }}</span>
+        </button>
+        <button
+          class="detail-actions__pause"
+          [class.detail-actions__pause--paused]="isPaused()"
+          type="button"
+          (click)="togglePause()"
+        >
+          <span class="material-symbols-outlined">bedtime</span>
+          <span> {{ isPaused() ? t('detail.pausedResume') : t('detail.kindPause') }} </span>
+        </button>
+      </div>
+
+      <p class="detail-actions__note">{{ t('detail.actionsNote') }}</p>
+    </section>
+  </main>
+</ion-content>
+
+<!-- "Ajuster l'heure" bottom sheet -->
+<ion-modal
+  class="schedule-sheet"
+  [initialBreakpoint]="1"
+  [breakpoints]="[0, 1]"
+  [isOpen]="scheduleOpen()"
+  (didDismiss)="closeSchedule()"
+>
+  <ng-template>
+    <div class="schedule-sheet__body">
+      <div class="schedule-sheet__grip"></div>
+
+      <h3 class="schedule-sheet__title">{{ t('detail.sheetTitle') }}</h3>
+      <p class="schedule-sheet__sub">{{ t('detail.sheetSub') }}</p>
+
+      <div class="schedule-sheet__row">
+        <div class="schedule-sheet__row-left">
+          <span class="material-symbols-outlined">notifications_active</span>
+          <span>{{ t('detail.reminder') }}</span>
+        </div>
+        <button
+          aria-checked="{{ draftReminderEnabled() }}"
+          class="toggle"
+          role="switch"
+          type="button"
+          [class.toggle--on]="draftReminderEnabled()"
+          (click)="toggleDraftReminder()"
+        >
+          <span class="toggle__knob"></span>
+        </button>
+      </div>
+
+      <div class="schedule-sheet__row" [class.schedule-sheet__row--disabled]="!draftReminderEnabled()">
+        <div class="schedule-sheet__row-left">
+          <span class="material-symbols-outlined">schedule</span>
+          <span>{{ t('form.reminderTime') }}</span>
+        </div>
+        <input
+          class="schedule-sheet__time"
+          type="time"
+          name="draft-reminder-time"
+          [disabled]="!draftReminderEnabled()"
+          [(ngModel)]="draftReminderTime"
+        />
+      </div>
+
+      <p class="schedule-sheet__hint">
+        @if (draftReminderEnabled()) { {{ t('detail.sheetHintOn', { time: draftReminderTime() || '—' }) }} } @else { {{
+        t('detail.sheetHintOff') }} }
+      </p>
+
+      <div class="schedule-sheet__actions">
+        <button class="schedule-sheet__save" type="button" [disabled]="!canSaveSchedule()" (click)="saveSchedule()">
+          <span class="material-symbols-outlined">check</span>
+          <span>{{ t('common.save') }}</span>
+        </button>
+        <button class="schedule-sheet__cancel" type="button" (click)="closeSchedule()">{{ t('common.cancel') }}</button>
+      </div>
+    </div>
+  </ng-template>
+</ion-modal>

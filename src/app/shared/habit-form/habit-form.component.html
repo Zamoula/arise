@@ -1,0 +1,181 @@
+<!-- Page intro -->
+<div class="page-intro">
+  <h2 class="page-intro__title">{{ introTitle() }}</h2>
+  <p class="page-intro__sub">{{ introSubtitle() }}</p>
+</div>
+
+<form class="habit-form" (submit)="$event.preventDefault()">
+  <!-- Ritual name -->
+  <div class="form-card">
+    <label class="form-label" for="habit-title">{{ t('form.titleLabel') }}</label>
+    <input
+      class="form-input"
+      [class.form-input--error]="inputError()"
+      id="habit-title"
+      name="habit-title"
+      [placeholder]="t('form.titlePlaceholder')"
+      type="text"
+      [(ngModel)]="title"
+    />
+
+    <div class="suggestions">
+      <span class="suggestions__hint">
+        <span class="material-symbols-outlined">lightbulb</span>
+        {{ t('form.ideasHint') }}
+      </span>
+      @for (suggestion of suggestions(); track suggestion.emojiLabel) {
+        <button class="suggestion-chip" type="button" (click)="applySuggestion(suggestion)">
+          {{ suggestion.emojiLabel }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Icon & color -->
+  <div class="form-card">
+    <span class="form-label form-label--block">{{ t('form.iconLabel') }}</span>
+
+    <div class="icon-grid">
+      @for (option of iconOptions(); track option.icon) {
+        <button
+          class="icon-option"
+          [class.icon-option--active]="selectedIcon() === option.icon"
+          type="button"
+          (click)="selectIcon(option.icon)"
+        >
+          <span class="material-symbols-outlined" [style.font-variation-settings]="iconFill(option.icon)">
+            {{ option.icon }}
+          </span>
+          <span class="icon-option__label">{{ option.label }}</span>
+        </button>
+      }
+    </div>
+
+    <div class="color-picker-block">
+      <span class="form-label form-label--block">{{ t('form.colorLabel') }}</span>
+      <div class="color-picker">
+        @for (option of colorOptions; track option.color) {
+          <button class="color-dot" [class]="option.dotClass" type="button" (click)="selectColor(option.color)">
+            <span
+              class="material-symbols-outlined color-dot__check"
+              [class]="option.checkClass"
+              [class.color-dot__check--visible]="selectedColor() === option.color"
+            >
+              check
+            </span>
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Frequency -->
+  <div class="form-card">
+    <span class="form-label form-label--block">{{ t('form.frequencyLabel') }}</span>
+
+    <div class="freq-tabs">
+      @for (frequency of frequencies(); track frequency.id) {
+        <button
+          class="freq-tabs__btn"
+          [class.freq-tabs__btn--active]="selectedFrequency() === frequency.id"
+          type="button"
+          (click)="selectFrequency(frequency.id)"
+        >
+          {{ frequency.label }}
+        </button>
+      }
+    </div>
+
+    <div class="days-selector">
+      @for (label of dayLabels(); track $index) {
+        <button
+          class="day-chip"
+          [class.day-chip--selected]="selectedDays()[$index]"
+          type="button"
+          (click)="toggleDay($index)"
+        >
+          {{ label }}
+        </button>
+      }
+    </div>
+
+    <p class="freq-note">{{ t('form.freqNote') }}</p>
+  </div>
+
+  <!-- Reminder -->
+  <div class="form-card">
+    <div class="reminder-head">
+      <div>
+        <span class="form-label form-label--block">{{ t('form.reminderLabel') }}</span>
+        <span class="form-sub">{{ t('form.reminderSub') }}</span>
+      </div>
+      <button
+        aria-checked="{{ reminderEnabled() }}"
+        class="toggle"
+        [class.toggle--on]="reminderEnabled()"
+        role="switch"
+        type="button"
+        (click)="toggleReminder()"
+      >
+        <span class="toggle__knob"></span>
+      </button>
+    </div>
+
+    <div class="reminder-block" [class.reminder-block--disabled]="!reminderEnabled()">
+      <div class="reminder-time">
+        <div class="reminder-time__left">
+          <span class="material-symbols-outlined">schedule</span>
+          <span>{{ t('form.reminderTime') }}</span>
+        </div>
+        <input class="reminder-time__input" type="time" [(ngModel)]="reminderTime" name="reminder-time" />
+      </div>
+      <div class="reminder-quote">
+        <span class="material-symbols-outlined">spa</span>
+        <p>{{ t('form.reminderQuote') }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Positive goal -->
+  <div class="form-card">
+    <span class="form-label form-label--block">{{ t('form.goalLabel') }}</span>
+    <span class="form-sub form-sub--spaced"> {{ t('form.goalSub') }} </span>
+
+    <div class="goal-row">
+      <div class="goal-row__left">
+        <div class="goal-row__icon">
+          <span class="material-symbols-outlined">flag</span>
+        </div>
+        <span class="goal-row__label">{{ goalLabel() }}</span>
+      </div>
+      <div class="goal-counter">
+        <button
+          [attr.aria-label]="t('form.decreaseAria')"
+          class="goal-counter__btn"
+          type="button"
+          (click)="changeGoal(-1)"
+        >
+          <span class="material-symbols-outlined">remove</span>
+        </button>
+        <span class="goal-counter__value">{{ goal() }}</span>
+        <button
+          [attr.aria-label]="t('form.increaseAria')"
+          class="goal-counter__btn"
+          type="button"
+          (click)="changeGoal(1)"
+        >
+          <span class="material-symbols-outlined">add</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="form-actions">
+    <button class="save-button" type="submit" (click)="save()">
+      <span class="material-symbols-outlined">check</span>
+      <span>{{ submitLabel() }}</span>
+    </button>
+    <button class="cancel-button" type="button" (click)="cancel()">{{ t('common.cancel') }}</button>
+  </div>
+</form>

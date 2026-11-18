@@ -1,0 +1,101 @@
+// Fixed top bar (app header). Styles are scoped to this component;
+// the notifications popover overlay styles live in src/global.scss.
+
+:host {
+  // The bar is position:fixed: the host element must not participate in layout.
+  display: contents;
+}
+
+.app-header {
+  position: fixed;
+  top: 0;
+  inset-inline: 0;
+  z-index: 50;
+  background: var(--zen-header-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.04);
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+.app-header__inner {
+  max-width: var(--zen-content-max-width);
+  margin: 0 auto;
+  height: 64px;
+  padding: 0 var(--zen-gutter);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.app-header__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.app-header__title {
+  margin: 0;
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 600;
+  color: var(--zen-on-surface);
+  letter-spacing: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.icon-button {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 9999px;
+  background: transparent;
+  color: var(--zen-on-surface-variant);
+  cursor: pointer;
+  transition:
+    color 0.2s,
+    background-color 0.2s;
+
+  &:hover {
+    color: var(--zen-on-surface);
+    background: var(--zen-hover-glass);
+  }
+
+  .material-symbols-outlined {
+    font-size: 22px;
+  }
+}
+
+.back-button {
+  width: 44px;
+  height: 44px;
+  margin-left: -4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 9999px;
+  background: transparent;
+  color: var(--zen-on-surface);
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  .material-symbols-outlined {
+    font-size: 24px;
+  }
+
+  &:hover {
+    background: rgba(241, 245, 249, 0.6);
+  }
+}

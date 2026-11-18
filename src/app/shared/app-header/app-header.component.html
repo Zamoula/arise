@@ -1,0 +1,56 @@
+<!-- Fixed top bar -->
+<header class="app-header">
+  <div class="app-header__inner">
+    @if (showBack()) {
+      <div class="app-header__brand">
+        <button [attr.aria-label]="t('header.back')" class="back-button" type="button" (click)="back.emit()">
+          <span class="material-symbols-outlined">arrow_back</span>
+        </button>
+        <h1 class="app-header__title">Arise</h1>
+      </div>
+    } @else {
+      <h1 class="app-header__title">Arise</h1>
+    }
+    <div class="app-header__actions">
+      <button
+        [attr.aria-label]="t('header.notifications')"
+        class="icon-button"
+        id="app-notifications-trigger"
+        type="button"
+      >
+        <span class="material-symbols-outlined">notifications</span>
+      </button>
+      @if (!showBack()) {
+        <ion-popover
+          trigger="app-notifications-trigger"
+          triggerAction="click"
+          side="bottom"
+          alignment="end"
+          cssClass="notifications-popover"
+        >
+          <ng-template>
+            <div class="notifications-popover__content">
+              <div class="notifications-popover__header">
+                <span class="notifications-popover__title">{{ t('header.notifications') }}</span>
+              </div>
+              <ul class="notifications-popover__list">
+                <li class="notifications-popover__item">
+                  <span class="material-symbols-outlined notifications-popover__icon">eco</span>
+                  <span class="notifications-popover__text">{{ t('header.notifBreathe') }}</span>
+                </li>
+                <li class="notifications-popover__item">
+                  <span class="material-symbols-outlined notifications-popover__icon">task_alt</span>
+                  <span class="notifications-popover__text">{{ t('header.notifWaiting') }}</span>
+                </li>
+                <li class="notifications-popover__item notifications-popover__item--muted">
+                  <span class="material-symbols-outlined notifications-popover__icon">notifications_off</span>
+                  <span class="notifications-popover__text">{{ t('header.notifEmpty') }}</span>
+                </li>
+              </ul>
+            </div>
+          </ng-template>
+        </ion-popover>
+      }
+    </div>
+  </div>
+</header>

@@ -1,0 +1,19 @@
+<!-- Stack page header: back button, no bottom nav -->
+<app-header [showBack]="true" (back)="goBack()" />
+
+<ion-content [fullscreen]="true" class="zen-content">
+  <main class="zen-main">
+    @if (habit(); as habit) {
+    <app-habit-form mode="edit" [initialHabit]="habit" (saved)="save($event)" (cancelled)="goBack()" />
+    } @else {
+    <section class="empty-state">
+      <div class="empty-state__icon">
+        <span class="material-symbols-outlined">search_off</span>
+      </div>
+      <h2 class="empty-state__title">{{ t('editHabit.notFound') }}</h2>
+      <p class="empty-state__text">{{ t('editHabit.notFoundText') }}</p>
+      <button class="empty-state__button" type="button" (click)="goBack()">{{ t('header.back') }}</button>
+    </section>
+    }
+  </main>
+</ion-content>

@@ -1,0 +1,8 @@
+<!-- Stack page header: back button, no bottom nav -->
+<app-header [showBack]="true" (back)="goBack()" />
+
+<ion-content [fullscreen]="true" class="zen-content">
+  <main class="zen-main">
+    <app-habit-form mode="create" (saved)="save($event)" (cancelled)="goBack()" />
+  </main>
+</ion-content>
